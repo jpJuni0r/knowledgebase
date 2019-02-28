@@ -1,4 +1,4 @@
 class Article < ApplicationRecord
-  validates :question, length: { minimum: 4 }
-  validates :answer, length: { minimum: 4 }
+  validates :question, presence: true
+  validates :answer, presence: true
 end
