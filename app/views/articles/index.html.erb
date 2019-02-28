@@ -15,7 +15,13 @@
   <% end %>
   <% if @articles.empty? %>
     <div class="list-group-item">
-      <p class="text-muted mb-1">There are no articles yet.</p>
+      <p class="text-muted mb-1">
+        <% unless params[:question] %>
+          There are no articles yet.
+        <% else %>
+          No articles mathing your question were found.
+        <% end %>
+      </p>
     </div>
   <% end %>
 </div>

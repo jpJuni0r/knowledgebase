@@ -17,6 +17,10 @@
           <li class="nav-item"><%= link_to 'Articles', articles_path, class: 'nav-link' %></li>
           <li class="nav-item"><%= link_to 'New Article', new_article_path, class: 'nav-link' %></li>
         </ul>
+        <%= form_tag(articles_path, {class: 'form-inline', method: 'get'}) do %>
+          <%= text_field_tag :question, params[:question], {class: 'form-control mr-sm-2', placeholder: 'Type Question...'} %>
+          <%= submit_tag 'Search', class: 'btn btn-outline-success' %>
+        <% end %>
       </nav>
     </header>
     <main class="container">
