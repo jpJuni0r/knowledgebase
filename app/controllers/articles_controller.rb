@@ -1,3 +1,9 @@
+require 'net/https'
+require 'uri'
+require 'cgi'
+require 'json'
+require 'securerandom'
+
 class ArticlesController < ApplicationController
   before_action :set_article, only: [:show, :edit, :update, :destroy]
 
@@ -24,7 +30,14 @@ class ArticlesController < ApplicationController
   # POST /articles
   # POST /articles.json
   def create
-    @article = Article.new(article_params)
+    params = article_params
+    puts 'Params'
+    puts params
+
+    translation = translateArticle(params[:question], params[:answer])
+    params = translation.merge(params)
+
+    @article = Article.new(params)
 
     respond_to do |format|
       if @article.save
@@ -41,7 +54,10 @@ class ArticlesController < ApplicationController
   # PATCH/PUT /articles/1.json
   def update
     respond_to do |format|
-      if @article.update(article_params)
+      params = article_params
+      translation = translateArticle(params[:question], params[:answer])
+      params = translation.merge(params)
+      if @article.update(params)
         format.html { redirect_to @article, notice: 'Article was successfully updated.' }
         format.json { render :show, status: :ok, location: @article }
       else
@@ -62,13 +78,52 @@ class ArticlesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_article
-      @article = Article.find(params[:id])
+
+  # Use callbacks to share common setup or constraints between actions.
+  def set_article
+    @article = Article.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def article_params
+    params.require(:article).permit(:question, :answer)
+  end
+
+  def translateArticle(question, answer)
+    translatedArticle = {
+      :question_de => translate(question),
+      :answer_de => translate(answer)
+    }
+  end
+
+  def translate(text)
+    if ENV['TRANSLATE_API_KEY'].present?
+      key = ENV['TRANSLATE_API_KEY']
+      uri = URI('https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&to=en&to=de')
+
+      content = [{
+        :Text => text
+      }].to_json
+
+      request = Net::HTTP::Post.new(uri)
+      request['Content-type'] = 'application/json'
+      request['Content-length'] = content.length
+      request['Ocp-Apim-Subscription-Key'] = key
+      request['X-ClientTraceId'] = SecureRandom.uuid
+      request.body = content
+
+      response = Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
+        http.request (request)
+      end
+
+      json = JSON.parse(response.body.force_encoding("utf-8"))
+
+      translatedText = json[0]["translations"].select{|key, hash| key["to"] == 'de'}[0]['text']
+      translatedText
+    else
+      'API key for translations not set'
     end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def article_params
-      params.require(:article).permit(:question, :answer, :question_de, :answer_de)
-    end
+  end
+
 end
