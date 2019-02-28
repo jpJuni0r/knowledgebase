@@ -2,15 +2,19 @@
   <p class="alert alert-primary"><%= notice %></p>
 <% end %>
 
-<h2><%= @article.question %></h2>
+<div class="row">
+  <div class="col-md">
+    <h2>English: <%= @article.question %></h2>
 
-<p><%= @article.answer %></p>
+    <p><%= @article.answer %></p>
+  </div>
+  <div class="col-md">
+    <h2>German translaton: <%= @article.question_de %></h2>
 
-<hr>
+    <p><%= @article.answer_de %></p>
 
-<h2>German translaton: <%= @article.question_de %></h2>
-
-<p><%= @article.answer_de %></p>
+  </div>
+</div>
 
 <br>
 
