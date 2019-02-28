@@ -4,7 +4,6 @@
 
 <h1>Articles</h1>
 
-
 <div class="list-group list-group-flush">
   <% @articles.each do |article| %>
     <a href="<%= article_url article %>" class="list-group-item list-group-item-action">
@@ -20,3 +19,7 @@
     </div>
   <% end %>
 </div>
+
+<br>
+
+<%= will_paginate @articles, renderer: WillPaginate::ActionView::BootstrapLinkRenderer %>
