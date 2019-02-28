@@ -10,6 +10,17 @@
   </head>
 
   <body>
-    <%= yield %>
+    <header class="navbar navbar-dark bg-dark navbar-expand-lg">
+      <%= link_to 'Knowledge Base', articles_path, class: 'navbar-brand' %>
+      <nav class="collapse navbar-collapse">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item"><%= link_to 'Articles', articles_path, class: 'nav-link' %></li>
+          <li class="nav-item"><%= link_to 'New Article', new_article_path, class: 'nav-link' %></li>
+        </ul>
+      </nav>
+    </header>
+    <main class="container">
+      <%= yield %>
+    </main>
   </body>
 </html>

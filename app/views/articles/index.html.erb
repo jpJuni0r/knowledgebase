@@ -1,0 +1,22 @@
+<% if notice %>
+<p class="alert alert-primary"><%= notice %></p>
+<% end %>
+
+<h1>Articles</h1>
+
+
+<div class="list-group list-group-flush">
+  <% @articles.each do |article| %>
+    <a href="<%= article_url article %>" class="list-group-item list-group-item-action">
+      <div>
+        <h5><%= article.question %></h5>
+        <p class="mb-1"><%= article.answer %></p>
+      </div>
+    </a>
+  <% end %>
+  <% if @articles.empty? %>
+    <div class="list-group-item">
+      <p class="text-muted mb-1">There are no articles yet.</p>
+    </div>
+  <% end %>
+</div>
